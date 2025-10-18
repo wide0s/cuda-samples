@@ -41,6 +41,8 @@ FILTER_OUT :=
 
 PROJECTS := $(filter-out $(FILTER_OUT),$(PROJECTS))
 
+BINARIES := $(shell find bin/$(TARGET_ARCH)/ -maxdepth 3 -type f -executable -print)
+
 %.ph_build :
 	+@$(MAKE) -C $(dir $*) $(MAKECMDGOALS)
 
@@ -63,6 +65,11 @@ test : $(addsuffix .ph_test,$(PROJECTS))
 tidy:
 	@find * | egrep "#" | xargs rm -f
 	@find * | egrep "\~" | xargs rm -f
+
+go:
+	@for bin in $(BINARIES) ; do \
+		./$${bin} ; \
+	done
 
 clean: tidy $(addsuffix .ph_clean,$(PROJECTS))
 
